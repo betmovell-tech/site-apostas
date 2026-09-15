@@ -3,24 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Site de Apostas</title>
+    <title>BetMóvel - Apostas & Jogos</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #121212; color: #fff; text-align: center; padding: 20px; }
-        h1 { color: #00ff66; }
-        .jogo { background: #1e1e1e; padding: 15px; margin: 10px auto; border-radius: 8px; max-width: 400px; }
-        button { background: #00ff66; color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        :root {
+            --primary-blue: #2563eb;
+            --secondary-pink: #ec4899;
+            --pure-white: #ffffff;
+            --dark-bg: #090d16;
+            --card-bg: #111827;
+            --text-muted: #cbd5e1;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: var(--pure-white);
+            padding-bottom: 40px;
+        }
+        header {
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--secondary-pink);
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.2);
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--pure-white);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .logo span {
+            color: var(--secondary-pink);
+        }
+        .user-balance {
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid var(--primary-blue);
+        }
+        .user-balance span {
+            color: var(--secondary-pink);
+            font-weight: bold;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .section-title {
+            font-size: 18px;
+            margin: 20px 0 10px 0;
+            color: var(--pure-white);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid var(--primary-blue);
+            padding-left: 8px;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+        .game-card:active {
+            transform: scale(0.97);
+        }
+        .game-card:hover {
+            border-color: var(--secondary-pink);
+        }
+        .game-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .game-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: var(--pure-white);
+        }
+        .game-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        .play-btn {
+            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            color: var(--pure-white);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .deposit-box {
+            background: linear-gradient(135deg, #111827 0%, #1e1b4b 100%);
+            border: 2px dashed var(--secondary-pink);
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: center;
+        }
+        .deposit-box h3 {
+            color: var(--secondary-pink);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .deposit-info {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            text-align: left;
+            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .deposit-info p {
+            margin: 6px 0;
+            color: var(--text-muted);
+        }
+        .deposit-info strong {
+            color: var(--pure-white);
+        }
+        .copy-btn {
+            background: linear-gradient(135deg, var(--secondary-pink), #db2777);
+            color: var(--pure-white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+        .copy-btn:active {
+            opacity: 0.9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
 
-    <h1>BetMóvel</h1>
-    <p>Faça as suas previsões e aposte usando M-Pesa!</p>
+    <header>
+        <div class="logo">Bet<span>Móvel</span></div>
+        <div class="user-balance">Saldo: <span>100.00 MT</span></div>
+    </header>
 
-    <div class="jogo">
-        <h3>Equipa A vs Equipa B</h3>
-        <p>Odd: 2.10 | Odd: 1.80</p>
-        <button onclick="alert('Funcionalidade de depósito M-Pesa em breve!')">Apostar</button>
+    <div class="container">
+        
+        <div class="section-title">🔥 Jogos em Destaque</div>
+        
+        <div class="games-grid">
+            <div class="game-card" onclick="alert('Aviator: A descolar em breve!')">
+                <div class="game-icon">🚀</div>
+                <div class="game-name">Aviator Crash</div>
+                <div class="game-desc">Multiplicadores altos</div>
+                <button class="play-btn">Apostar</button>
+            </div>
+
+            <div class="game-card" onclick="alert('Futebol: Escolha a sua equipa!')">
+                <div class="game-icon">⚽</div>
+                <div class="game-name">Futebol Ao Vivo</div>
+                <div class="game-desc">Ligas Nacionais e Internacionais</div>
+                <button class="play-btn">Apostar</button>
+            </div>
+
+            <div class="game-card" onclick="alert('Roleta: Gire e ganhe!')">
+                <div class="game-icon">🎰</div>
+                <div class="game-name">Roleta da Sorte</div>
+                <div class="game-desc">Prémios instantâneos</div>
+                <button class="play-btn">Jogar</button>
+            </div>
+
+            <div class="game-card" onclick="alert('Moçambique Bet: Boa sorte!')">
+                <div class="game-icon">🎲</div>
+                <div class="game-name">Joga o Bicho</div>
+                <div class="game-desc">Tradição e emoção</div>
+                <button class="play-btn">Jogar</button>
+            </div>
+        </div>
+
+        <div class="deposit-box">
+            <h3>💳 Depositar via M-Pesa</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Envie o valor do depósito para o número abaixo e jogue instantaneamente.</p>
+            
+            <div class="deposit-info">
+                <p><strong>Operadora:</strong> Vodacom M-Pesa</p>
+                <p><strong>Número:</strong> <span id="phoneNumber" style="color: var(--pure-white); font-size: 15px; font-weight: bold;">853026170</span></p>
+                <p><strong>Titular:</strong> Edson Francisco Cossa</p>
+            </div>
+
+            <button class="copy-btn" onclick="copyNumber()">📋 Copiar Número M-Pesa</button>
+        </div>
+
     </div>
+
+    <div class="footer">
+        &copy; 2026 BetMóvel. Todos os direitos reservados. Jogue com responsabilidade (+18).
+    </div>
+
+    <script>
+        function copyNumber() {
+            const num = "853026170";
+            navigator.clipboard.writeText(num).then(() => {
+                alert("Número M-Pesa copiado com sucesso: " + num);
+            }).catch(err => {
+                alert("Erro ao copiar número.");
+            });
+        }
+    </script>
 
 </body>
 </html>
