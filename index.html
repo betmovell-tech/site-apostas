@@ -12,6 +12,7 @@
             --dark-bg: #090d16;
             --card-bg: #111827;
             --text-muted: #cbd5e1;
+            --success: #10b981;
         }
         * {
             box-sizing: border-box;
@@ -81,10 +82,6 @@
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.2s, border-color 0.2s;
-            cursor: pointer;
-        }
-        .game-card:active {
-            transform: scale(0.97);
         }
         .game-card:hover {
             border-color: var(--secondary-pink);
@@ -115,20 +112,26 @@
             cursor: pointer;
             width: 100%;
         }
-        .deposit-box {
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+        .action-box {
             background: linear-gradient(135deg, #111827 0%, #1e1b4b 100%);
-            border: 2px dashed var(--secondary-pink);
             border-radius: 14px;
             padding: 20px;
             margin-top: 25px;
             text-align: center;
+            border: 2px dashed var(--secondary-pink);
         }
-        .deposit-box h3 {
-            color: var(--secondary-pink);
+        .action-box.withdraw {
+            border-color: var(--primary-blue);
+            background: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+        }
+        .action-box h3 {
             margin-bottom: 10px;
             font-size: 18px;
         }
-        .deposit-info {
+        .deposit-info, .form-group {
             background: rgba(0, 0, 0, 0.4);
             padding: 12px;
             border-radius: 8px;
@@ -137,14 +140,25 @@
             font-size: 13px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .deposit-info p {
+        .deposit-info p, .form-group label {
             margin: 6px 0;
             color: var(--text-muted);
+            display: block;
         }
         .deposit-info strong {
             color: var(--pure-white);
         }
-        .copy-btn {
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            background: #090d16;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: var(--pure-white);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .btn-custom {
             background: linear-gradient(135deg, var(--secondary-pink), #db2777);
             color: var(--pure-white);
             border: none;
@@ -157,8 +171,19 @@
             margin-top: 5px;
             box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
         }
-        .copy-btn:active {
-            opacity: 0.9;
+        .btn-withdraw {
+            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .game-display {
+            background: #090d16;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid var(--primary-blue);
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--success);
         }
         .footer {
             text-align: center;
@@ -172,54 +197,60 @@
 
     <header>
         <div class="logo">Bet<span>Móvel</span></div>
-        <div class="user-balance">Saldo: <span>100.00 MT</span></div>
+        <div class="user-balance">Saldo: <span id="balance">100.00</span> MT</div>
     </header>
 
     <div class="container">
         
+        <!-- SECÇÃO DE JOGOS FUNCIONAIS -->
         <div class="section-title">🔥 Jogos em Destaque</div>
         
         <div class="games-grid">
-            <div class="game-card" onclick="alert('Aviator: A descolar em breve!')">
+            <div class="game-card">
                 <div class="game-icon">🚀</div>
                 <div class="game-name">Aviator Crash</div>
-                <div class="game-desc">Multiplicadores altos</div>
-                <button class="play-btn">Apostar</button>
+                <div class="game-desc">Aposte e levante antes de voar!</div>
+                <button class="play-btn" onclick="jogarAviator()">Jogar Aviator</button>
             </div>
 
-            <div class="game-card" onclick="alert('Futebol: Escolha a sua equipa!')">
-                <div class="game-icon">⚽</div>
-                <div class="game-name">Futebol Ao Vivo</div>
-                <div class="game-desc">Ligas Nacionais e Internacionais</div>
-                <button class="play-btn">Apostar</button>
-            </div>
-
-            <div class="game-card" onclick="alert('Roleta: Gire e ganhe!')">
+            <div class="game-card">
                 <div class="game-icon">🎰</div>
                 <div class="game-name">Roleta da Sorte</div>
-                <div class="game-desc">Prémios instantâneos</div>
-                <button class="play-btn">Jogar</button>
-            </div>
-
-            <div class="game-card" onclick="alert('Moçambique Bet: Boa sorte!')">
-                <div class="game-icon">🎲</div>
-                <div class="game-name">Joga o Bicho</div>
-                <div class="game-desc">Tradição e emoção</div>
-                <button class="play-btn">Jogar</button>
+                <div class="game-desc">Gire por 20 MT e ganhe prémios</div>
+                <button class="play-btn" onclick="jogarRoleta()">Girar Roleta</button>
             </div>
         </div>
 
-        <div class="deposit-box">
-            <h3>💳 Depositar via M-Pesa</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Envie o valor do depósito para o número abaixo e jogue instantaneamente.</p>
+        <div id="gameResult" class="game-display" style="display: none; text-align: center;"></div>
+
+        <!-- SECÇÃO DE DEPÓSITO M-PESA -->
+        <div class="action-box">
+            <h3 style="color: var(--secondary-pink);">💳 Depositar via M-Pesa</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Envie o valor para o número abaixo para carregar a conta.</p>
             
             <div class="deposit-info">
                 <p><strong>Operadora:</strong> Vodacom M-Pesa</p>
-                <p><strong>Número:</strong> <span id="phoneNumber" style="color: var(--pure-white); font-size: 15px; font-weight: bold;">853026170</span></p>
+                <p><strong>Número:</strong> <span style="color: var(--pure-white); font-size: 15px; font-weight: bold;">853026170</span></p>
                 <p><strong>Titular:</strong> Edson Francisco Cossa</p>
             </div>
 
-            <button class="copy-btn" onclick="copyNumber()">📋 Copiar Número M-Pesa</button>
+            <button class="btn-custom" onclick="copyNumber()">📋 Copiar Número M-Pesa</button>
+        </div>
+
+        <!-- SECÇÃO DE LEVANTAMENTO M-PESA -->
+        <div class="action-box withdraw">
+            <h3 style="color: var(--primary-blue);">💸 Pedir Levantamento</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Transfira os seus ganhos diretamente para o seu M-Pesa.</p>
+            
+            <div class="form-group" style="text-align: left;">
+                <label>Número M-Pesa para receber:</label>
+                <input type="number" id="levantaNumero" class="form-input" placeholder="Ex: 85xxxxxxx">
+                
+                <label style="margin-top: 10px;">Valor a levantar (MT):</label>
+                <input type="number" id="levantaValor" class="form-input" placeholder="Ex: 500">
+            </div>
+
+            <button class="btn-custom btn-withdraw" onclick="pedirLevantamento()">Solicitar Levantamento</button>
         </div>
 
     </div>
@@ -229,6 +260,12 @@
     </div>
 
     <script>
+        let saldo = 100.00;
+
+        function atualizarSaldo() {
+            document.getElementById('balance').innerText = saldo.toFixed(2);
+        }
+
         function copyNumber() {
             const num = "853026170";
             navigator.clipboard.writeText(num).then(() => {
@@ -236,6 +273,83 @@
             }).catch(err => {
                 alert("Erro ao copiar número.");
             });
+        }
+
+        function jogarAviator() {
+            let aposta = 20;
+            if (saldo < aposta) {
+                alert("Saldo insuficiente para jogar! Faça um depósito.");
+                return;
+            }
+            saldo -= aposta;
+            atualizarSaldo();
+            
+            let multiplicadores = [1.2, 1.5, 2.0, 3.5, 0.0, 5.0];
+            let resultado = multiplicadores[Math.floor(Math.random() * multiplicadores.length)];
+            
+            let display = document.getElementById('gameResult');
+            display.style.display = "block";
+            
+            if (resultado > 0) {
+                let ganho = aposta * resultado;
+                saldo += ganho;
+                display.style.color = "var(--success)";
+                display.innerHTML = `🚀 Aviator subiu até ${resultado}x! Ganhou: +${ganho.toFixed(2)} MT`;
+            } else {
+                display.style.color = "var(--secondary-pink)";
+                display.innerHTML = `💥 O avião caiu cedo! Perdeu a aposta de ${aposta} MT.`;
+            }
+            atualizarSaldo();
+        }
+
+        function jogarRoleta() {
+            let custo = 20;
+            if (saldo < custo) {
+                alert("Saldo insuficiente para rodar a roleta!");
+                return;
+            }
+            saldo -= custo;
+            atualizarSaldo();
+
+            let premios = [0, 10, 30, 50, 100, 200];
+            let premio = premios[Math.floor(Math.random() * premios.length)];
+            saldo += premio;
+
+            let display = document.getElementById('gameResult');
+            display.style.display = "block";
+
+            if (premio > 0) {
+                display.style.color = "var(--success)";
+                display.innerHTML = `🎰 A roleta parou! Ganhou um prémio de +${premio.toFixed(2)} MT!`;
+            } else {
+                display.style.color = "var(--secondary-pink)";
+                display.innerHTML = `🎰 Não foi desta vez! Tente novamente.`;
+            }
+            atualizarSaldo();
+        }
+
+        function pedirLevantamento() {
+            let num = document.getElementById('levantaNumero').value;
+            let val = parseFloat(document.getElementById('levantaValor').value);
+
+            if (!num || num.length < 9) {
+                alert("Por favor, insira um número M-Pesa válido.");
+                return;
+            }
+            if (!val || val <= 0) {
+                alert("Insira um valor válido para levantamento.");
+                return;
+            }
+            if (val > saldo) {
+                alert("Não tem saldo suficiente para esse levantamento!");
+                return;
+            }
+
+            saldo -= val;
+            atualizarSaldo();
+            alert(`✅ Pedido de levantamento de ${val} MT para o número ${num} enviado com sucesso! Será processado em breve.`);
+            document.getElementById('levantaNumero').value = '';
+            document.getElementById('levantaValor').value = '';
         }
     </script>
 
