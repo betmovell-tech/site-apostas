@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BetMóvel - Apostas & Jogos</title>
+    <title>Elephant Bet / BetMóvel - Moçambique</title>
     <style>
         :root {
-            --primary-blue: #2563eb;
-            --secondary-pink: #ec4899;
+            --bg-dark: #0f131a;
+            --card-bg: #181f29;
+            --primary-pink: #e91e63;
+            --accent-yellow: #f1c40f;
             --pure-white: #ffffff;
-            --dark-bg: #090d16;
-            --card-bg: #111827;
-            --text-muted: #cbd5e1;
-            --success: #10b981;
-            --warning: #f59e0b;
+            --text-muted: #94a3b8;
+            --success: #2ecc71;
+            --warning: #f39c12;
         }
         * {
             box-sizing: border-box;
@@ -22,213 +22,223 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background-color: var(--dark-bg);
+            background-color: var(--bg-dark);
             color: var(--pure-white);
-            padding-bottom: 40px;
+            padding-bottom: 50px;
         }
         header {
-            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 3px solid var(--secondary-pink);
-            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.2);
+            background: linear-gradient(135deg, #121824 0%, #1c2533 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-pink);
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
         .logo {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 900;
-            color: var(--pure-white);
-            letter-spacing: 1px;
             text-transform: uppercase;
+            color: var(--pure-white);
         }
         .logo span {
-            color: var(--secondary-pink);
+            color: var(--accent-yellow);
         }
-        .user-balance {
-            margin-top: 10px;
+        .user-balance-box {
             background: rgba(255, 255, 255, 0.08);
-            display: inline-block;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 14px;
-            border: 1px solid var(--primary-blue);
+            font-size: 13px;
+            border: 1px solid var(--primary-pink);
         }
-        .user-balance span {
-            color: var(--secondary-pink);
+        .user-balance-box span {
+            color: var(--accent-yellow);
             font-weight: bold;
         }
         .container {
             max-width: 600px;
-            margin: 20px auto;
+            margin: 15px auto;
             padding: 0 15px;
         }
+        .legal-banner {
+            background: rgba(233, 30, 99, 0.1);
+            border: 1px solid var(--primary-pink);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            text-align: center;
+        }
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             margin: 20px 0 10px 0;
-            color: var(--pure-white);
             display: flex;
             align-items: center;
             gap: 8px;
-            border-left: 4px solid var(--primary-blue);
+            border-left: 4px solid var(--accent-yellow);
             padding-left: 8px;
+            color: var(--pure-white);
         }
-        /* AVIATOR 3D ESTILO */
+        /* AVIATOR 3D */
         .aviator-box {
-            background: radial-gradient(circle, #1e1b4b 0%, #090d16 100%);
-            border: 2px solid var(--primary-blue);
-            border-radius: 14px;
-            padding: 20px;
+            background: radial-gradient(circle, #1a2332 0%, #0f131a 100%);
+            border: 2px solid var(--primary-pink);
+            border-radius: 12px;
+            padding: 15px;
             text-align: center;
-            position: relative;
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
             margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(233, 30, 99, 0.2);
         }
         .aviator-screen {
-            background: #030712;
-            height: 140px;
-            border-radius: 10px;
+            background: #080b10;
+            height: 130px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 12px;
         }
         .plane-3d {
-            font-size: 40px;
-            transition: transform 0.3s ease;
-            text-shadow: 0 0 15px var(--secondary-pink);
+            font-size: 36px;
+            transition: transform 0.2s ease;
+            text-shadow: 0 0 10px var(--accent-yellow);
         }
         .multiplier-text {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 900;
             color: var(--success);
-            margin-top: 5px;
+            margin-top: 4px;
         }
         .games-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
         .game-card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 12px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .game-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
+            font-size: 28px;
+            margin-bottom: 6px;
         }
         .game-name {
             font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
+            font-size: 13px;
+            margin-bottom: 3px;
         }
         .game-desc {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .input-bet {
             width: 100%;
-            padding: 8px;
-            background: #090d16;
+            padding: 7px;
+            background: #0f131a;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
+            border-radius: 5px;
             color: var(--pure-white);
-            font-size: 13px;
-            margin-bottom: 8px;
+            font-size: 12px;
+            margin-bottom: 6px;
             text-align: center;
         }
         .play-btn {
-            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            background: linear-gradient(135deg, var(--primary-pink), #c2185b);
             color: var(--pure-white);
             border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 7px 10px;
+            border-radius: 5px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             width: 100%;
+            text-transform: uppercase;
         }
         .action-box {
-            background: linear-gradient(135deg, #111827 0%, #1e1b4b 100%);
-            border-radius: 14px;
-            padding: 20px;
-            margin-top: 25px;
+            background: linear-gradient(135deg, var(--card-bg) 0%, #131b26 100%);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
             text-align: center;
-            border: 2px dashed var(--secondary-pink);
+            border: 2px dashed var(--accent-yellow);
         }
         .action-box.withdraw {
-            border-color: var(--primary-blue);
-            background: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+            border-color: var(--primary-pink);
         }
         .action-box h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
+            margin-bottom: 8px;
+            font-size: 16px;
         }
         .deposit-info, .form-group {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 12px;
-            border-radius: 8px;
-            margin: 12px 0;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
             text-align: left;
-            font-size: 13px;
+            font-size: 12px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .deposit-info p, .form-group label {
-            margin: 6px 0;
+            margin: 4px 0;
             color: var(--text-muted);
             display: block;
         }
         .form-input {
             width: 100%;
-            padding: 10px;
-            background: #090d16;
+            padding: 8px;
+            background: #0f131a;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
+            border-radius: 5px;
             color: var(--pure-white);
-            font-size: 14px;
-            margin-top: 5px;
+            font-size: 13px;
+            margin-top: 4px;
         }
         .btn-custom {
-            background: linear-gradient(135deg, var(--secondary-pink), #db2777);
-            color: var(--pure-white);
+            background: linear-gradient(135deg, var(--accent-yellow), #d4ac0d);
+            color: #000;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 9px 15px;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             width: 100%;
             margin-top: 5px;
-            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+            text-transform: uppercase;
         }
         .btn-withdraw {
-            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            background: linear-gradient(135deg, var(--primary-pink), #c2185b);
+            color: var(--pure-white);
         }
-        /* PAINEL ADMIN PARA APROVAR DEPÓSITOS */
+        /* PAINEL ADMIN */
         .admin-panel {
-            background: #1e293b;
+            background: #151c28;
             border: 2px solid var(--warning);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 30px;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 25px;
         }
         .admin-panel h4 {
             color: var(--warning);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
         }
         .pending-item {
-            background: rgba(0,0,0,0.3);
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 8px;
-            font-size: 12px;
+            background: rgba(0,0,0,0.4);
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 6px;
+            font-size: 11px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -237,15 +247,15 @@
             background: var(--success);
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
         }
         .footer {
             text-align: center;
-            margin-top: 30px;
-            font-size: 12px;
+            margin-top: 25px;
+            font-size: 11px;
             color: var(--text-muted);
         }
     </style>
@@ -253,12 +263,16 @@
 <body>
 
     <header>
-        <div class="logo">Bet<span>Móvel</span></div>
-        <div class="user-balance">Saldo: <span id="balance">0.00</span> MT</div>
+        <div class="logo">Elephant <span>Bet</span></div>
+        <div class="user-balance-box">Saldo: <span id="balance">0.00</span> MT</div>
     </header>
 
     <div class="container">
         
+        <div class="legal-banner">
+            Gerido por <b>EDSON FRANCISCO COSSA</b> (NUEL 100866900) sob Licença N°093/IGJ/JDS/2022 (IGJ Moçambique). Restrito a +18 anos.
+        </div>
+
         <!-- JOGO AVIATOR 3D -->
         <div class="section-title">🚀 Aviator 3D Crash</div>
         <div class="aviator-box">
@@ -266,78 +280,78 @@
                 <div class="plane-3d" id="planeIcon">✈️</div>
                 <div class="multiplier-text" id="multiplierDisplay">1.00x</div>
             </div>
-            <input type="number" id="aviatorBet" class="input-bet" placeholder="Valor da aposta (1 - 100000 MT)" min="1" max="100000">
-            <button class="play-btn" onclick="iniciarAviator3D()" style="background: linear-gradient(135deg, var(--secondary-pink), #db2777); font-size: 14px; padding: 10px;">Descolar / Apostar</button>
+            <input type="number" id="aviatorBet" class="input-bet" placeholder="Aposta (1 a 100.000 MT)" min="1" max="100000">
+            <button class="play-btn" onclick="iniciarAviator3D()">Descolar / Apostar</button>
         </div>
 
         <!-- OUTROS JOGOS -->
-        <div class="section-title">🔥 Outros Jogos</div>
+        <div class="section-title">🎲 Outros Jogos & Mercados</div>
         <div class="games-grid">
             <div class="game-card">
                 <div class="game-icon">🎰</div>
                 <div class="game-name">Roleta da Sorte</div>
                 <div class="game-desc">Aposta de 1 a 100.000 MT</div>
                 <input type="number" id="roletaBet" class="input-bet" placeholder="Aposta MT" min="1" max="100000">
-                <button class="play-btn" onclick="jogarRoleta()">Girar Roleta</button>
+                <button class="play-btn" onclick="jogarRoleta()">Girar</button>
             </div>
 
             <div class="game-card">
                 <div class="game-icon">⚽</div>
                 <div class="game-name">Futebol Ao Vivo</div>
-                <div class="game-desc">Simulador de Gols</div>
+                <div class="game-desc">Mercado 1X2 / Gols</div>
                 <input type="number" id="futebolBet" class="input-bet" placeholder="Aposta MT" min="1" max="100000">
-                <button class="play-btn" onclick="jogarFutebol()">Apostar Jogo</button>
+                <button class="play-btn" onclick="jogarFutebol()">Apostar</button>
             </div>
         </div>
 
-        <!-- DEPÓSITO M-PESA COM APROVAÇÃO PENDENTE -->
+        <!-- DEPÓSITO M-PESA COM CONFIRMAÇÃO MANUAL -->
         <div class="action-box">
-            <h3 style="color: var(--secondary-pink);">💳 Depositar via M-Pesa</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Envie o dinheiro e submeta o comprovativo. O saldo só atualizará após a sua aceitação.</p>
+            <h3 style="color: var(--accent-yellow);">💳 Depositar via M-Pesa / e-Mola</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Envie o valor e submeta. O saldo permanece a 0 MT até você aceitar no painel de administração.</p>
             
             <div class="deposit-info">
-                <p><strong>Operadora:</strong> Vodacom M-Pesa</p>
-                <p><strong>Número:</strong> <span style="color: var(--pure-white); font-size: 15px; font-weight: bold;">853026170</span></p>
+                <p><strong>Operadora:</strong> Vodacom M-Pesa / Movitel e-Mola</p>
+                <p><strong>Número Oficial:</strong> <span style="color: var(--pure-white); font-size: 14px; font-weight: bold;">853026170</span></p>
                 <p><strong>Titular:</strong> Edson Francisco Cossa</p>
             </div>
 
             <div class="form-group" style="text-align: left;">
-                <label>O seu número M-Pesa (que enviou):</label>
+                <label>O seu número de telemóvel:</label>
                 <input type="number" id="depositoNum" class="form-input" placeholder="Ex: 84xxxxxxx">
                 
-                <label style="margin-top: 8px;">Valor depositado (MT):</label>
+                <label style="margin-top: 6px;">Valor depositado (MT):</label>
                 <input type="number" id="depositoVal" class="form-input" placeholder="Ex: 500">
             </div>
 
-            <button class="btn-custom" onclick="solicitarDeposito()">Submeter Depósito para Confirmação</button>
+            <button class="btn-custom" onclick="solicitarDeposito()">Submeter Depósito</button>
         </div>
 
-        <!-- LEVANTAMENTO M-PESA -->
+        <!-- LEVANTAMENTO -->
         <div class="action-box withdraw">
-            <h3 style="color: var(--primary-blue);">💸 Pedir Levantamento</h3>
+            <h3 style="color: var(--primary-pink);">💸 Pedir Levantamento</h3>
             <div class="form-group" style="text-align: left;">
-                <label>Número M-Pesa para receber:</label>
+                <label>Número M-Pesa/e-Mola (Mesmo titular):</label>
                 <input type="number" id="levantaNumero" class="form-input" placeholder="Ex: 85xxxxxxx">
                 
-                <label style="margin-top: 8px;">Valor a levantar (MT):</label>
+                <label style="margin-top: 6px;">Valor a levantar (MT):</label>
                 <input type="number" id="levantaValor" class="form-input" placeholder="Ex: 500">
             </div>
             <button class="btn-custom btn-withdraw" onclick="pedirLevantamento()">Solicitar Levantamento</button>
         </div>
 
-        <!-- PAINEL DO DONO DO SITE (PARA ACEITAR OU REJEITAR DEPÓSITOS) -->
+        <!-- PAINEL DO ADMINISTRADOR -->
         <div class="admin-panel">
-            <h4>⚙️ Painel do Administrador (O seu painel de controlo)</h4>
-            <p style="font-size: 12px; color: var(--text-muted);">Aqui aparecem os depósitos feitos pelos utilizadores para você validar:</p>
+            <h4>⚙️ Painel de Controlo do Administrador</h4>
+            <p style="font-size: 11px; color: var(--text-muted);">Valide os pagamentos recebidos no seu telemóvel para creditar o saldo do utilizador:</p>
             <div id="listaPendentes">
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Nenhum depósito pendente de momento.</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Nenhum depósito pendente.</p>
             </div>
         </div>
 
     </div>
 
     <div class="footer">
-        &copy; 2026 BetMóvel. Todos os direitos reservados. Jogue com responsabilidade (+18).
+        &copy; 2026 Elephant Bet Moçambique. Todos os direitos reservados. Proibido a menores de 18 anos.
     </div>
 
     <script>
@@ -350,17 +364,17 @@
 
         function validarAposta(valor) {
             if (isNaN(valor) || valor < 1 || valor > 100000) {
-                alert("A aposta deve estar compreendida entre 1 MT e 100.000 MT.");
+                alert("A aposta deve estar entre 1 MT e 100.000 MT.");
                 return false;
             }
             if (valor > saldo) {
-                alert("Saldo insuficiente! Faça um depósito primeiro.");
+                alert("Saldo insuficiente! Faça um depósito para continuar.");
                 return false;
             }
             return true;
         }
 
-        // LÓGICA DO JOGO AVIATOR 3D
+        // JOGO AVIATOR 3D
         function iniciarAviator3D() {
             let aposta = parseFloat(document.getElementById('aviatorBet').value);
             if (!validarAposta(aposta)) return;
@@ -373,19 +387,18 @@
             let mult = 1.00;
             
             let flyInterval = setInterval(() => {
-                mult += 0.08;
+                mult += 0.09;
                 multDisplay.innerText = mult.toFixed(2) + "x";
-                plane.style.transform = `scale(${1 + mult/10}) translateY(-${mult * 3}px)`;
+                plane.style.transform = `scale(${1 + mult/12}) translateY(-${mult * 2.5}px)`;
 
-                // Chance de crash aleatória
-                if (Math.random() < 0.08 || mult > 10) {
+                if (Math.random() < 0.08 || mult > 12) {
                     clearInterval(flyInterval);
                     if (Math.random() > 0.4) {
                         let ganho = aposta * Number(mult.toFixed(2));
                         saldo += ganho;
-                        multDisplay.innerText = `💥 Voou! (${mult.toFixed(2)}x) - Ganhou +${ganho.toFixed(2)} MT`;
+                        multDisplay.innerText = `🚀 (${mult.toFixed(2)}x) Ganhou +${ganho.toFixed(2)} MT`;
                     } else {
-                        multDisplay.innerText = `💥 Avião Caiu! Perdeu ${aposta} MT`;
+                        multDisplay.innerText = `💥 Caiu! Perdeu ${aposta} MT`;
                     }
                     atualizarSaldo();
                 }
@@ -405,7 +418,7 @@
             saldo += ganho;
             atualizarSaldo();
 
-            alert(sorteio > 0 ? `🎰 Roleta parou em ${sorteio}x! Ganhou ${ganho.toFixed(2)} MT` : `🎰 A roleta deu vazio! Perdeu a aposta.`);
+            alert(sorteio > 0 ? `🎰 Roleta ${sorteio}x! Ganhou ${ganho.toFixed(2)} MT` : `🎰 Roleta vazia! Perdeu a aposta.`);
         }
 
         function jogarFutebol() {
@@ -419,42 +432,41 @@
             if (ganhou) {
                 let ganho = aposta * 2;
                 saldo += ganho;
-                alert(`⚽ Golo da sua equipa! Ganhou o jogo e faturou +${ganho.toFixed(2)} MT!`);
+                alert(`⚽ Vitória! Faturou +${ganho.toFixed(2)} MT!`);
             } else {
-                alert(`⚽ A sua equipa perdeu o jogo! Perdeu ${aposta} MT.`);
+                alert(`⚽ Derrota no jogo! Perdeu ${aposta} MT.`);
             }
             atualizarSaldo();
         }
 
-        // SISTEMA DE DEPÓSITO COM ESPERA POR APROVAÇÃO
+        // SISTEMA DE DEPÓSITO COM APROVAÇÃO MANUAL
         function solicitarDeposito() {
             let num = document.getElementById('depositoNum').value;
             let val = parseFloat(document.getElementById('depositoVal').value);
 
             if (!num || num.length < 9) {
-                alert("Insira um número M-Pesa válido.");
+                alert("Insira um número de telemóvel válido.");
                 return;
             }
             if (!val || val <= 0) {
-                alert("Insira um valor de depósito válido.");
+                alert("Insira um valor válido.");
                 return;
             }
 
             let idDep = Date.now();
             depositosPendentes.push({ id: idDep, numero: num, valor: val });
             
-            alert(`⏳ Pedido enviado! O saldo continua a 0 MT até que receba a confirmação no seu M-Pesa (853026170) e aceite no seu painel de administração abaixo.`);
+            alert(`⏳ Pedido submetido! O saldo continua a 0.00 MT até que receba a confirmação no seu M-Pesa (853026170) e clique em 'Aceitar' no painel de administração.`);
             
             document.getElementById('depositoNum').value = '';
             document.getElementById('depositoVal').value = '';
             renderizarPainelAdmin();
         }
 
-        // PAINEL DE ADMINISTRAÇÃO PARA O EDSON ACEITAR
         function renderizarPainelAdmin() {
             let container = document.getElementById('listaPendentes');
             if (depositosPendentes.length === 0) {
-                container.innerHTML = `<p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Nenhum depósito pendente de momento.</p>`;
+                container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Nenhum depósito pendente.</p>`;
                 return;
             }
 
@@ -463,7 +475,7 @@
                 html += `
                     <div class="pending-item">
                         <span>Tel: <b>${dep.numero}</b> | <b>${dep.valor} MT</b></span>
-                        <button class="btn-approve" onclick="aceitarDeposito(${dep.id}, ${dep.valor})">Aceitar Recebimento</button>
+                        <button class="btn-approve" onclick="aceitarDeposito(${dep.id}, ${dep.valor})">Aceitar</button>
                     </div>
                 `;
             });
@@ -475,7 +487,7 @@
             atualizarSaldo();
             depositosPendentes = depositosPendentes.filter(d => d.id !== id);
             renderizarPainelAdmin();
-            alert(`✅ Depósito de ${valor} MT aceite com sucesso! O saldo foi creditado na conta do utilizador.`);
+            alert(`✅ Depósito de ${valor} MT aceite e creditado com sucesso!`);
         }
 
         function pedirLevantamento() {
@@ -483,7 +495,7 @@
             let val = parseFloat(document.getElementById('levantaValor').value);
 
             if (!num || num.length < 9) {
-                alert("Insira um número M-Pesa válido para levantamento.");
+                alert("Insira um número M-Pesa/e-Mola válido.");
                 return;
             }
             if (!val || val <= 0) {
@@ -491,13 +503,13 @@
                 return;
             }
             if (val > saldo) {
-                alert("Não tem saldo suficiente para realizar este levantamento!");
+                alert("Saldo insuficiente para este levantamento!");
                 return;
             }
 
             saldo -= val;
             atualizarSaldo();
-            alert(`✅ Pedido de levantamento de ${val} MT para ${num} efetuado com sucesso!`);
+            alert(`✅ Pedido de levantamento de ${val} MT para ${num} enviado para processamento.`);
             document.getElementById('levantaNumero').value = '';
             document.getElementById('levantaValor').value = '';
         }
