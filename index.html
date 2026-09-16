@@ -27,7 +27,7 @@
             color: var(--pure-white);
             padding-bottom: 50px;
         }
-        /* MODAL / ECRÃ DE REGISTO SMS */
+        /* ECRÃ DE REGISTO SMS */
         #authOverlay {
             position: fixed;
             top: 0;
@@ -288,6 +288,81 @@
             background: linear-gradient(135deg, var(--primary-pink), #c2185b);
             color: var(--pure-white);
         }
+
+        /* SIMULADOR DE TELEFONE / USSD MODAL */
+        #phoneModalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        .phone-mockup {
+            background: #111;
+            border: 6px solid #333;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 320px;
+            padding: 20px 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            text-align: center;
+        }
+        .phone-screen {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 160px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border: 1px solid #c8e6c9;
+            white-space: pre-line;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .phone-input-group {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .phone-input {
+            flex: 1;
+            padding: 8px;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .phone-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .phone-close {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 5px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
         /* PAINEL ADMIN */
         .admin-panel {
             background: #151c28;
@@ -373,6 +448,20 @@
         </div>
     </div>
 
+    <!-- MODAL DO APLICATIVO TELEFONE (USSD INTERATIVO DE DEPÓSITO) -->
+    <div id="phoneModalOverlay">
+        <div class="phone-mockup">
+            <div style="font-size: 11px; color: #888; margin-bottom: 5px;">📞 Ecrã do Telemóvel (USSD)</div>
+            <div class="phone-screen" id="ussdScreenText">A ligar...</div>
+            
+            <div class="phone-input-group">
+                <input type="password" id="ussdInput" class="phone-input" placeholder="Resposta..." autofocus>
+                <button class="phone-btn" onclick="processarPassoUssd()">Enviar</button>
+            </div>
+            <button class="phone-close" onclick="fecharJanelaTelefone()">Cancelar / Fechar</button>
+        </div>
+    </div>
+
     <header>
         <div class="logo">Bet<span>Móvel</span></div>
         <div class="user-balance-box">
@@ -418,10 +507,17 @@
             </div>
         </div>
 
-        <!-- DEPÓSITO COM PIN M-PESA / E-MOLA -->
+        <!-- DEPÓSITO COM TRANSAÇÃO DIRETA DO CARTÃO -->
         <div class="action-box">
-            <h3 style="color: var(--accent-yellow);">💳 Depositar via M-Pesa / e-Mola</h3>
-            <p style="font-size: 12px; color: var(--text-muted);">O saldo permanece a 0 MT até que aprove o pagamento no painel administrativo.</p>
+            <h3 style="color: var(--accent-yellow);">💳 Depositar via Aplicativo de Telefone</h3>
+            
+            <!-- CAIXA QUE MOSTRA O SALDO DA CONTA DO JOGADOR -->
+            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; color: var(--text-muted);">Saldo Disponível na Conta/Cartão:</span>
+                <span style="font-size: 13px; font-weight: bold; color: var(--success);" id="saldoCartaoDisplay">5000.00 MT</span>
+            </div>
+
+            <p style="font-size: 12px; color: var(--text-muted);">O dinheiro sai diretamente da sua conta pessoal móvel ao introduzir os dados no menu interativo abaixo.</p>
             
             <div class="deposit-info">
                 <p><strong>Números Oficiais para Depósito:</strong></p>
@@ -431,22 +527,16 @@
 
             <div class="form-group" style="text-align: left;">
                 <label>Escolher Operadora:</label>
-                <select id="operadoraSelect" class="form-select" onchange="ajustarPinRequisito()">
-                    <option value="mpesa">M-Pesa (Vodacom)</option>
-                    <option value="emola">e-Mola (Movitel)</option>
+                <select id="operadoraSelect" class="form-select" onchange="atualizarTextoBotaoUssd()">
+                    <option value="mpesa">M-Pesa (*150#)</option>
+                    <option value="emola">e-Mola (*898#)</option>
                 </select>
 
-                <label style="margin-top: 6px;">O seu número de telemóvel:</label>
-                <input type="number" id="depositoNum" class="form-input" placeholder="Ex: 84xxxxxxx">
-                
-                <label style="margin-top: 6px;" id="pinLabel">PIN M-Pesa (4 dígitos):</label>
-                <input type="password" id="depositoPin" class="form-input" placeholder="Insira o PIN" maxlength="6">
-
-                <label style="margin-top: 6px;">Valor depositado (MT):</label>
+                <label style="margin-top: 6px;">Valor a depositar (MT):</label>
                 <input type="number" id="depositoVal" class="form-input" placeholder="Ex: 500">
             </div>
 
-            <button class="btn-custom" onclick="solicitarDeposito()">Submeter Depósito</button>
+            <button class="btn-custom" id="btnAbrirTel" onclick="abrirMenuTelefone()">Abrir Telemóvel e Pagar (*150#)</button>
         </div>
 
         <!-- LEVANTAMENTO -->
@@ -488,6 +578,7 @@
 
     <script>
         let saldo = 0.00;
+        let saldoCartao = 5000.00; // Saldo real simulado na conta do telemóvel do utilizador
         let depositosPendentes = [];
         let emJogo = false;
         let currentMultiplier = 1.00;
@@ -498,6 +589,26 @@
 
         let codigoSmsCorreto = "";
         let telemovelUtilizador = "";
+
+        // Variáveis do Fluxo USSD Interativo do Telefone
+        let ussdPasso = 0;
+        let ussdOperadora = "";
+        let ussdValor = 0;
+
+        function atualizarInterfaceGeral() {
+            document.getElementById('balance').innerText = saldo.toFixed(2);
+            document.getElementById('saldoCartaoDisplay').innerText = saldoCartao.toFixed(2) + " MT";
+        }
+
+        function atualizarTextoBotaoUssd() {
+            let op = document.getElementById('operadoraSelect').value;
+            let btn = document.getElementById('btnAbrirTel');
+            if (op === 'mpesa') {
+                btn.innerText = "Abrir Telemóvel e Pagar (*150#)";
+            } else {
+                btn.innerText = "Abrir Telemóvel e Pagar (*898#)";
+            }
+        }
 
         function enviarCodigoSms() {
             let num = document.getElementById('regNumero').value;
@@ -529,10 +640,6 @@
             } else {
                 alert("❌ Código SMS incorreto. Tente novamente.");
             }
-        }
-
-        function atualizarSaldo() {
-            document.getElementById('balance').innerText = saldo.toFixed(2);
         }
 
         function tentarEntrarAdmin() {
@@ -568,6 +675,91 @@
             return true;
         }
 
+        // LÓGICA DO TELEFONE / USSD INTERATIVO COM *150# E *898#
+        function abrirMenuTelefone() {
+            let val = parseFloat(document.getElementById('depositoVal').value);
+            let op = document.getElementById('operadoraSelect').value;
+
+            if (!val || val <= 0) {
+                alert("Insira primeiro um valor válido a depositar.");
+                return;
+            }
+            if (val > saldoCartao) {
+                alert("❌ Saldo insuficiente na sua conta móvel para efetuar este depósito!");
+                return;
+            }
+
+            ussdValor = val;
+            ussdOperadora = op;
+            ussdPasso = 1;
+
+            document.getElementById('phoneModalOverlay').style.display = 'flex';
+            let codigoDial = (op === 'mpesa') ? '*150#' : '*898#';
+            
+            document.getElementById('ussdScreenText').innerText = `A marcar ${codigoDial}...\n\n1. Enviar Dinheiro / Pagamentos\n2. Comprar\n3. Servicos`;
+            document.getElementById('ussdInput').value = '';
+            document.getElementById('ussdInput').focus();
+        }
+
+        function fecharJanelaTelefone() {
+            document.getElementById('phoneModalOverlay').style.display = 'none';
+            ussdPasso = 0;
+        }
+
+        function processarPassoUssd() {
+            let inputVal = document.getElementById('ussdInput').value.trim();
+            let screen = document.getElementById('ussdScreenText');
+            let inputField = document.getElementById('ussdInput');
+            let nomeOperadoraExibido = (ussdOperadora === 'mpesa') ? 'M-Pesa (*150#)' : 'e-Mola (*898#)';
+
+            if (ussdPasso === 1) {
+                if (inputVal === "1") {
+                    ussdPasso = 2;
+                    screen.innerText = `[${nomeOperadoraExibido}]\nInsira o número de telemóvel do destinatário (BetMóvel):`;
+                    inputField.value = "";
+                } else {
+                    screen.innerText = `Opção inválida.\n\n1. Enviar Dinheiro / Pagamentos\n2. Comprar\n3. Servicos`;
+                    inputField.value = "";
+                }
+            } else if (ussdPasso === 2) {
+                if (inputVal.length >= 9) {
+                    ussdPasso = 3;
+                    screen.innerText = `[${nomeOperadoraExibido}]\nInsira o valor em Meticais (MT):\n(Valor pretendido: ${ussdValor} MT)`;
+                    inputField.value = ussdValor;
+                } else {
+                    alert("Insira um número válido com pelo menos 9 dígitos.");
+                }
+            } else if (ussdPasso === 3) {
+                ussdPasso = 4;
+                screen.innerText = `[${nomeOperadoraExibido}]\nIntroduza o seu PIN secreto para confirmar a transferência de ${ussdValor} MT:`;
+                inputField.value = "";
+                inputField.type = "password";
+            } else if (ussdPasso === 4) {
+                if (inputVal.length >= 4) {
+                    // DESCONTO REAL DO SALDO DA CONTA DO CARTÃO DO JOGADOR
+                    saldoCartao -= ussdValor;
+                    atualizarInterfaceGeral();
+
+                    screen.innerText = `✅ TRANSAÇÃO CONCLUÍDA!\n\nForam retirados ${ussdValor} MT da sua conta ${nomeOperadoraExibido} com sucesso. Aguarde validação.`;
+                    inputField.style.display = 'none';
+
+                    let idDep = Date.now();
+                    depositosPendentes.push({ id: idDep, operadora: ussdOperadora === 'mpesa' ? 'M-PESA' : 'E-MOLA', numero: telemovelUtilizador, valor: ussdValor });
+                    if (isAdmin) renderizarPainelAdmin();
+
+                    setTimeout(() => {
+                        fecharJanelaTelefone();
+                        inputField.style.display = 'block';
+                        inputField.type = 'text';
+                        document.getElementById('depositoVal').value = '';
+                    }, 3500);
+                } else {
+                    alert("PIN incorreto ou inválido.");
+                }
+            }
+        }
+
+        // CONTROLOS DE JOGO E OUTROS
         function controlarAviator() {
             let btn = document.getElementById('aviatorBtn');
 
@@ -577,7 +769,7 @@
 
                 valorApostadoAviator = aposta;
                 saldo -= aposta;
-                atualizarSaldo();
+                atualizarInterfaceGeral();
 
                 emJogo = true;
                 currentMultiplier = 1.00;
@@ -632,7 +824,7 @@
             } else {
                 multDisplay.innerText = `💥 Flew Away! Caiu aos ${mult.toFixed(2)}x. Perdeu.`;
             }
-            atualizarSaldo();
+            atualizarInterfaceGeral();
         }
 
         function jogarRoleta() {
@@ -640,13 +832,13 @@
             if (!validarAposta(aposta)) return;
 
             saldo -= aposta;
-            atualizarSaldo();
+            atualizarInterfaceGeral();
 
             let multiplicadores = isAdmin ? [0, 2, 3] : [0, 0, 0.5, 1.5, 2];
             let sorteio = multiplicadores[Math.floor(Math.random() * multiplicadores.length)];
             let ganho = aposta * sorteio;
             saldo += ganho;
-            atualizarSaldo();
+            atualizarInterfaceGeral();
 
             alert(sorteio > 0 ? `🎰 Roleta ${sorteio}x! Ganhou ${ganho.toFixed(2)} MT` : `🎰 Roleta vazia! Perdeu a aposta.`);
         }
@@ -656,7 +848,7 @@
             if (!validarAposta(aposta)) return;
 
             saldo -= aposta;
-            atualizarSaldo();
+            atualizarInterfaceGeral();
 
             let ganhou = isAdmin ? true : (Math.random() > 0.5);
             if (ganhou) {
@@ -666,57 +858,7 @@
             } else {
                 alert(`⚽ Derrota no jogo! Perdeu ${aposta} MT.`);
             }
-            atualizarSaldo();
-        }
-
-        function ajustarPinRequisito() {
-            let op = document.getElementById('operadoraSelect').value;
-            let pinInput = document.getElementById('depositoPin');
-            let pinLabel = document.getElementById('pinLabel');
-
-            if (op === 'mpesa') {
-                pinLabel.innerText = "PIN M-Pesa (4 dígitos):";
-                pinInput.setAttribute("maxlength", "4");
-                pinInput.setAttribute("placeholder", "Ex: 1234");
-            } else {
-                pinLabel.innerText = "PIN e-Mola (6 dígitos):";
-                pinInput.setAttribute("maxlength", "6");
-                pinInput.setAttribute("placeholder", "Ex: 123456");
-            }
-        }
-
-        function solicitarDeposito() {
-            let op = document.getElementById('operadoraSelect').value;
-            let num = document.getElementById('depositoNum').value;
-            let pin = document.getElementById('depositoPin').value;
-            let val = parseFloat(document.getElementById('depositoVal').value);
-
-            if (!num || num.length < 9) {
-                alert("Insira um número de telemóvel válido.");
-                return;
-            }
-            if (op === 'mpesa' && pin.length !== 4) {
-                alert("O PIN do M-Pesa deve conter exatamente 4 dígitos.");
-                return;
-            }
-            if (op === 'emola' && pin.length !== 6) {
-                alert("O PIN do e-Mola deve conter exatamente 6 dígitos.");
-                return;
-            }
-            if (!val || val <= 0) {
-                alert("Insira um valor de depósito válido.");
-                return;
-            }
-
-            let idDep = Date.now();
-            depositosPendentes.push({ id: idDep, operadora: op.toUpperCase(), numero: num, valor: val });
-            
-            alert(`⏳ Pedido submetido! O saldo continua a 0.00 MT até que aprove no painel administrativo.`);
-            
-            document.getElementById('depositoNum').value = '';
-            document.getElementById('depositoPin').value = '';
-            document.getElementById('depositoVal').value = '';
-            if (isAdmin) renderizarPainelAdmin();
+            atualizarInterfaceGeral();
         }
 
         function renderizarPainelAdmin() {
@@ -740,10 +882,10 @@
 
         function aceitarDeposito(id, valor) {
             saldo += valor;
-            atualizarSaldo();
+            atualizarInterfaceGeral();
             depositosPendentes = depositosPendentes.filter(d => d.id !== id);
             renderizarPainelAdmin();
-            alert(`✅ Depósito de ${valor} MT aceite e creditado com sucesso!`);
+            alert(`✅ Depósito de ${valor} MT aceite e creditado na plataforma com sucesso!`);
         }
 
         function pedirLevantamento() {
@@ -764,8 +906,9 @@
             }
 
             saldo -= val;
-            atualizarSaldo();
-            alert(`✅ Pedido de levantamento de ${val} MT para ${num} enviado para processamento.`);
+            saldoCartao += val;
+            atualizarInterfaceGeral();
+            alert(`✅ Pedido de levantamento de ${val} MT transferido com sucesso para o telemóvel ${num}.`);
             document.getElementById('levantaNumero').value = '';
             document.getElementById('levantaValor').value = '';
         }
