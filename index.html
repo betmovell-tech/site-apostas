@@ -27,6 +27,50 @@
             color: var(--pure-white);
             padding-bottom: 50px;
         }
+        /* MODAL / ECRÃ DE REGISTO SMS */
+        #authOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 22, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .auth-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-pink);
+            border-radius: 14px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.3);
+        }
+        .auth-card h2 {
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+        .auth-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .sms-simulation-box {
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px dashed var(--accent-yellow);
+            padding: 10px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 12px;
+            color: var(--accent-yellow);
+            display: none;
+            text-align: left;
+        }
         header {
             background: linear-gradient(135deg, #121824 0%, #1c2533 100%);
             padding: 15px 20px;
@@ -244,7 +288,7 @@
             background: linear-gradient(135deg, var(--primary-pink), #c2185b);
             color: var(--pure-white);
         }
-        /* PAINEL ADMIN DO AVIÃO E DEPÓSITOS */
+        /* PAINEL ADMIN */
         .admin-panel {
             background: #151c28;
             border: 2px solid var(--warning);
@@ -287,10 +331,52 @@
 </head>
 <body>
 
+    <!-- ECRÃ DE REGISTO / VALIDAÇÃO SMS -->
+    <div id="authOverlay">
+        <div class="auth-card">
+            <div class="logo" style="margin-bottom: 10px;">Bet<span>Móvel</span></div>
+            <h2>Criar Conta / Entrar</h2>
+            <p>Insira o seu número para receber o código SMS enviado pelos nossos números oficiais (<b>85 302 6170</b> ou <b>86 372 6113</b>).</p>
+            
+            <div class="form-group" style="text-align: left;" id="step1Form">
+                <label>Escolher Número de Envio SMS:</label>
+                <select id="remetenteSmsSelect" class="form-select">
+                    <option value="863726113">86 372 6113 (Principal)</option>
+                    <option value="853026170">85 302 6170 (Alternativo)</option>
+                </select>
+
+                <label style="margin-top: 8px;">Operadora:</label>
+                <select id="regOperadora" class="form-select">
+                    <option value="M-Pesa">M-Pesa (Vodacom)</option>
+                    <option value="e-Mola">e-Mola (Movitel)</option>
+                    <option value="mKesh">mKesh (Tmcel)</option>
+                </select>
+
+                <label style="margin-top: 8px;">O seu número de telemóvel:</label>
+                <input type="number" id="regNumero" class="form-input" placeholder="Ex: 84 / 85 / 86xxxxxxx">
+                
+                <button class="btn-custom" style="margin-top: 15px;" onclick="enviarCodigoSms()">Enviar Código SMS</button>
+            </div>
+
+            <!-- SIMULAÇÃO DO SMS RECEBIDO -->
+            <div class="sms-simulation-box" id="smsSimulationBox">
+                📱 <b>SMS Recebido de <span id="remetenteExibido">863726113</span>:</b><br>
+                "O seu código de verificação BetMóvel é: <b id="codigoGeradoVisual" style="color:var(--pure-white); font-size:14px;">----</b>"
+            </div>
+
+            <div class="form-group" style="text-align: left; display: none;" id="step2Form">
+                <label>Insira o Código de 4 Dígitos recebido via SMS:</label>
+                <input type="number" id="regCodigoInput" class="form-input" placeholder="Ex: 4819" maxlength="4">
+                
+                <button class="btn-custom" style="margin-top: 15px;" onclick="verificarCodigoSms()">Confirmar e Entrar</button>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="logo">Bet<span>Móvel</span></div>
         <div class="user-balance-box">
-            Saldo: <span id="balance">0.00</span> MT
+            Conta: <span id="userPhoneDisplay">--</span> | Saldo: <span id="balance">0.00</span> MT
             <div class="admin-badge" onclick="tentarEntrarAdmin()">Admin</div>
         </div>
     </header>
@@ -332,14 +418,15 @@
             </div>
         </div>
 
-        <!-- DEPÓSITO COM PIN M-PESA (4 DÍGITOS) / E-MOLA (6 DÍGITOS) -->
+        <!-- DEPÓSITO COM PIN M-PESA / E-MOLA -->
         <div class="action-box">
             <h3 style="color: var(--accent-yellow);">💳 Depositar via M-Pesa / e-Mola</h3>
             <p style="font-size: 12px; color: var(--text-muted);">O saldo permanece a 0 MT até que aprove o pagamento no painel administrativo.</p>
             
             <div class="deposit-info">
-                <p><strong>Número Oficial:</strong> <span style="color: var(--pure-white); font-size: 14px; font-weight: bold;">853026170</span></p>
-                <p><strong>Titular:</strong> Edson Francisco Cossa</p>
+                <p><strong>Números Oficiais para Depósito:</strong></p>
+                <p>• <span style="color: var(--pure-white); font-weight: bold;">86 372 6113</span> (Edson Francisco Cossa)</p>
+                <p>• <span style="color: var(--pure-white); font-weight: bold;">85 302 6170</span> (Edson Francisco Cossa)</p>
             </div>
 
             <div class="form-group" style="text-align: left;">
@@ -375,7 +462,7 @@
             <button class="btn-custom btn-withdraw" onclick="pedirLevantamento()">Solicitar Levantamento</button>
         </div>
 
-        <!-- PAINEL DO ADMINISTRADOR (PROTEGIDO) -->
+        <!-- PAINEL DO ADMINISTRADOR -->
         <div class="admin-panel" id="adminPanelContainer">
             <h4>⚙️ Painel de Controlo do Administrador</h4>
             
@@ -408,6 +495,41 @@
         let valorApostadoAviator = 0;
         let isAdmin = false;
         let multiplicadorAdminAlvo = 2.00;
+
+        let codigoSmsCorreto = "";
+        let telemovelUtilizador = "";
+
+        function enviarCodigoSms() {
+            let num = document.getElementById('regNumero').value;
+            let remetenteEscolhido = document.getElementById('remetenteSmsSelect').value;
+
+            if (!num || num.length < 9) {
+                alert("Por favor, insira um número de telemóvel válido.");
+                return;
+            }
+
+            telemovelUtilizador = num;
+            codigoSmsCorreto = Math.floor(1000 + Math.random() * 9000).toString();
+
+            document.getElementById('remetenteExibido').innerText = remetenteEscolhido;
+            document.getElementById('codigoGeradoVisual').innerText = codigoSmsCorreto;
+            document.getElementById('smsSimulationBox').style.display = 'block';
+            
+            document.getElementById('step1Form').style.display = 'none';
+            document.getElementById('step2Form').style.display = 'block';
+        }
+
+        function verificarCodigoSms() {
+            let codigoDigitado = document.getElementById('regCodigoInput').value;
+
+            if (codigoDigitado === codigoSmsCorreto) {
+                alert("✅ Conta criada/validada com sucesso via SMS!");
+                document.getElementById('authOverlay').style.display = 'none';
+                document.getElementById('userPhoneDisplay').innerText = telemovelUtilizador;
+            } else {
+                alert("❌ Código SMS incorreto. Tente novamente.");
+            }
+        }
 
         function atualizarSaldo() {
             document.getElementById('balance').innerText = saldo.toFixed(2);
