@@ -149,7 +149,31 @@
             text-align: center;
             margin-bottom: 20px;
             box-shadow: 0 0 15px rgba(233, 30, 99, 0.2);
+            position: relative;
         }
+        /* OS 3 POTINHOS / HISTÓRICO NO TOPO */
+        .pots-header {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .pot-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent-yellow);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--accent-yellow);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .pot-item:hover {
+            background: var(--accent-yellow);
+            color: #000;
+        }
+
         .aviator-screen {
             background: #080b10;
             height: 140px;
@@ -289,6 +313,44 @@
             color: var(--pure-white);
         }
 
+        /* MODAL DA TABELA DE HISTÓRICO DOS POTINHOS */
+        #historyModalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10002;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        .history-card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-yellow);
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+        }
+        .history-table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+        .history-table th, .history-table td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .history-table th {
+            color: var(--accent-yellow);
+        }
+
         /* SIMULADOR DE TELEFONE / USSD MODAL */
         #phoneModalOverlay {
             position: fixed;
@@ -422,8 +484,8 @@
 
                 <label style="margin-top: 8px;">Operadora:</label>
                 <select id="regOperadora" class="form-select">
-                    <option value="M-Pesa">M-Pesa (Vodacom)</option>
-                    <option value="e-Mola">e-Mola (Movitel)</option>
+                    <option value="M-Pesa">M-Pesa (*150#)</option>
+                    <option value="e-Mola">e-Mola (*898#)</option>
                     <option value="mKesh">mKesh (Tmcel)</option>
                 </select>
 
@@ -445,6 +507,29 @@
                 
                 <button class="btn-custom" style="margin-top: 15px;" onclick="verificarCodigoSms()">Confirmar e Entrar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL DA TABELA DOS 3 POTINHOS (HISTÓRICO) -->
+    <div id="historyModalOverlay">
+        <div class="history-card">
+            <h3 style="color: var(--accent-yellow); margin-bottom: 5px;">📊 Histórico de Voo (Últimos Jogos)</h3>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Consulta de onde o avião caiu nos jogos anteriores.</p>
+            
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>N° do Jogo</th>
+                        <th>Queda Exata</th>
+                        <th>Modo</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- Preenchido via JavaScript -->
+                </tbody>
+            </table>
+
+            <button class="phone-close" style="margin-top: 15px;" onclick="fecharHistoricoPotinhos()">Fechar Tabela</button>
         </div>
     </div>
 
@@ -479,6 +564,14 @@
         <!-- JOGO AVIATOR -->
         <div class="section-title">🚀 Aviator Crash</div>
         <div class="aviator-box">
+            
+            <!-- OS 3 POTINHOS NO TOPO DA TABELA DO AVIATOR -->
+            <div class="pots-header">
+                <div class="pot-item" onclick="abrirHistoricoPotinhos()" title="Ver tabela do jogo passado">🍯 Potinho 1: <span id="pot1Val">1.00x</span></div>
+                <div class="pot-item" onclick="abrirHistoricoPotinhos()" title="Ver tabela do jogo passado">🍯 Potinho 2: <span id="pot2Val">1.00x</span></div>
+                <div class="pot-item" onclick="abrirHistoricoPotinhos()" title="Ver tabela do jogo passado">🍯 Potinho 3: <span id="pot3Val">1.00x</span></div>
+            </div>
+
             <div class="aviator-screen">
                 <div class="plane-3d" id="planeIcon">✈️</div>
                 <div class="multiplier-text" id="multiplierDisplay">1.00x</div>
@@ -511,7 +604,6 @@
         <div class="action-box">
             <h3 style="color: var(--accent-yellow);">💳 Depositar via Aplicativo de Telefone</h3>
             
-            <!-- CAIXA QUE MOSTRA O SALDO DA CONTA DO JOGADOR -->
             <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 11px; color: var(--text-muted);">Saldo Disponível na Conta/Cartão:</span>
                 <span style="font-size: 13px; font-weight: bold; color: var(--success);" id="saldoCartaoDisplay">5000.00 MT</span>
@@ -557,10 +649,10 @@
             <h4>⚙️ Painel de Controlo do Administrador</h4>
             
             <div style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; margin-bottom: 10px;">
-                <label style="font-size: 11px; color: var(--warning); display:block; margin-bottom:4px;">🎯 Controlar Onde o Avião Vai Cair (Multiplicador Alvo):</label>
+                <label style="font-size: 11px; color: var(--warning); display:block; margin-bottom:4px;">🎯 Limite Máximo do Avião (O avião pode cair antes, mas NUNCA passa deste limite):</label>
                 <div style="display: flex; gap: 5px;">
-                    <input type="number" id="adminTargetMultiplier" class="form-input" value="2.00" step="0.1" min="1.01" max="100" style="margin-top:0;">
-                    <button class="btn-approve" onclick="guardarAlvoAviao()" style="white-space: nowrap;">Definir Alvo</button>
+                    <input type="number" id="adminTargetMultiplier" class="form-input" value="5.00" step="0.5" min="1.01" max="100" style="margin-top:0;">
+                    <button class="btn-approve" onclick="guardarAlvoAviao()" style="white-space: nowrap;">Definir Limite</button>
                 </div>
             </div>
 
@@ -573,24 +665,30 @@
     </div>
 
     <div class="footer">
-        &copy; 2026 BetMóvel Moçambique. Todos os direitos reservados. Proibido a menores de 18 anos.
+        &copy; 2026 BetMóvel Moçambique. Todos os resultados e transações reservados. Proibido a menores de 18 anos.
     </div>
 
     <script>
         let saldo = 0.00;
-        let saldoCartao = 5000.00; // Saldo real simulado na conta do telemóvel do utilizador
+        let saldoCartao = 5000.00; 
         let depositosPendentes = [];
         let emJogo = false;
         let currentMultiplier = 1.00;
         let aviatorTimer = null;
         let valorApostadoAviator = 0;
         let isAdmin = false;
-        let multiplicadorAdminAlvo = 2.00;
+        let limiteAdminMaximo = 5.00; // Limite máximo programado pelo admin
+
+        // Histórico de voos para os potinhos e tabela
+        let historicoVoos = [
+            { id: "Jogo #3", mult: "2.10x", tipo: "Normal" },
+            { id: "Jogo #2", mult: "1.35x", tipo: "Normal" },
+            { id: "Jogo #1", mult: "4.80x", tipo: "Normal" }
+        ];
 
         let codigoSmsCorreto = "";
         let telemovelUtilizador = "";
 
-        // Variáveis do Fluxo USSD Interativo do Telefone
         let ussdPasso = 0;
         let ussdOperadora = "";
         let ussdValor = 0;
@@ -598,6 +696,13 @@
         function atualizarInterfaceGeral() {
             document.getElementById('balance').innerText = saldo.toFixed(2);
             document.getElementById('saldoCartaoDisplay').innerText = saldoCartao.toFixed(2) + " MT";
+            
+            // Atualizar os 3 potinhos no topo
+            if (historicoVoos.length >= 3) {
+                document.getElementById('pot1Val').innerText = historicoVoos[0].mult;
+                document.getElementById('pot2Val').innerText = historicoVoos[1].mult;
+                document.getElementById('pot3Val').innerText = historicoVoos[2].mult;
+            }
         }
 
         function atualizarTextoBotaoUssd() {
@@ -608,6 +713,20 @@
             } else {
                 btn.innerText = "Abrir Telemóvel e Pagar (*898#)";
             }
+        }
+
+        function abrirHistoricoPotinhos() {
+            let tbody = document.getElementById('historyTableBody');
+            let html = '';
+            historicoVoos.forEach(item => {
+                html += `<tr><td><b>${item.id}</b></td><td><span style="color:var(--success);">${item.mult}</span></td><td>${item.tipo}</td></tr>`;
+            });
+            tbody.innerHTML = html;
+            document.getElementById('historyModalOverlay').style.display = 'flex';
+        }
+
+        function fecharHistoricoPotinhos() {
+            document.getElementById('historyModalOverlay').style.display = 'none';
         }
 
         function enviarCodigoSms() {
@@ -654,13 +773,13 @@
         }
 
         function guardarAlvoAviao() {
-            let novoAlvo = parseFloat(document.getElementById('adminTargetMultiplier').value);
-            if (isNaN(novoAlvo) || novoAlvo < 1.01) {
-                alert("Insira um valor válido acima de 1.00x");
+            let novoLimite = parseFloat(document.getElementById('adminTargetMultiplier').value);
+            if (isNaN(novoLimite) || novoLimite < 1.01) {
+                alert("Insira um limite válido acima de 1.00x");
                 return;
             }
-            multiplicadorAdminAlvo = novoAlvo;
-            alert(`✅ Alvo do avião atualizado com sucesso! Próximo voo cai nos ${multiplicadorAdminAlvo.toFixed(2)}x.`);
+            limiteAdminMaximo = novoLimite;
+            alert(`✅ Limite máximo do avião programado para ${limiteAdminMaximo.toFixed(2)}x. O avião poderá cair antes, mas nunca ultrapassará este valor.`);
         }
 
         function validarAposta(valor) {
@@ -675,7 +794,7 @@
             return true;
         }
 
-        // LÓGICA DO TELEFONE / USSD INTERATIVO COM *150# E *898#
+        // LÓGICA DO TELEFONE / USSD
         function abrirMenuTelefone() {
             let val = parseFloat(document.getElementById('depositoVal').value);
             let op = document.getElementById('operadoraSelect').value;
@@ -736,7 +855,6 @@
                 inputField.type = "password";
             } else if (ussdPasso === 4) {
                 if (inputVal.length >= 4) {
-                    // DESCONTO REAL DO SALDO DA CONTA DO CARTÃO DO JOGADOR
                     saldoCartao -= ussdValor;
                     atualizarInterfaceGeral();
 
@@ -759,7 +877,7 @@
             }
         }
 
-        // CONTROLOS DE JOGO E OUTROS
+        // CONTROLOS DO AVIATOR: CRASH ALEATÓRIO QUE RESPEITA O LIMITE MÁXIMO DO ADMIN
         function controlarAviator() {
             let btn = document.getElementById('aviatorBtn');
 
@@ -779,51 +897,66 @@
                 let multDisplay = document.getElementById('multiplierDisplay');
                 let plane = document.getElementById('planeIcon');
 
-                let crashAt;
-                if (isAdmin) {
-                    crashAt = multiplicadorAdminAlvo;
-                } else {
-                    let sorteioRisco = Math.random();
-                    if (sorteioRisco < 0.6) {
-                        crashAt = 1.10 + Math.random() * 1.5;
-                    } else if (sorteioRisco < 0.9) {
-                        crashAt = 2.60 + Math.random() * 4.0;
-                    } else {
-                        crashAt = 6.60 + Math.random() * 30.0;
-                    }
-                }
+                // O avião sorteia um ponto de queda orgânico, mas nunca ultrapassa o limite máximo definido pelo administrador
+                let crashNatural = 1.05 + (Math.random() * Math.random() * 8.0); // Tendência realista
+                let crashAt = Math.min(crashNatural, limiteAdminMaximo);
+                
+                // Se o admin tiver colocado um limite estrito baixo, ou aleatoriamente bater no limite
+                if (crashAt < 1.05) crashAt = 1.05;
 
                 aviatorTimer = setInterval(() => {
-                    currentMultiplier += 0.06;
+                    currentMultiplier += 0.04;
                     multDisplay.innerText = currentMultiplier.toFixed(2) + "x";
                     plane.style.transform = `scale(${1 + currentMultiplier/25}) translateY(-${currentMultiplier * 1.5}px)`;
 
+                    // Se atingir o ponto de crash sorteado ou o limite do admin
                     if (currentMultiplier >= crashAt) {
-                        finalizarAviator(false, crashAt);
+                        finalizarAviator(crashAt);
                     }
                 }, 100);
 
             } else {
-                finalizarAviator(true, currentMultiplier);
+                // O jogador fez o cash out a tempo
+                let multAtualDoJogador = currentMultiplier;
+                let ganhoTotal = valorApostadoAviator * multAtualDoJogador;
+                saldo += ganhoTotal;
+                atualizarInterfaceGeral();
+
+                let multDisplay = document.getElementById('multiplierDisplay');
+                let btn = document.getElementById('aviatorBtn');
+                
+                btn.innerText = "🎉 JÁ LEVANTOU!";
+                btn.className = "play-btn";
+                btn.disabled = true;
+
+                document.getElementById('multiplierDisplay').style.color = "var(--accent-yellow)";
+                multDisplay.innerText = `🎉 Levantou a ${multAtualDoJogador.toFixed(2)}x (+${ganhoTotal.toFixed(2)} MT)!`;
             }
         }
 
-        function finalizarAviator(ganhou, mult) {
+        function finalizarAviator(multQueda) {
             clearInterval(aviatorTimer);
             let btn = document.getElementById('aviatorBtn');
             let multDisplay = document.getElementById('multiplierDisplay');
             emJogo = false;
 
+            btn.disabled = false;
             btn.innerText = "Descolar / Apostar";
             btn.className = "play-btn";
+            document.getElementById('multiplierDisplay').style.color = "var(--danger)";
 
-            if (ganhou) {
-                let ganhoTotal = valorApostadoAviator * mult;
-                saldo += ganhoTotal;
-                multDisplay.innerText = `🎉 Levantou a ${mult.toFixed(2)}x! Ganhou +${ganhoTotal.toFixed(2)} MT`;
-            } else {
-                multDisplay.innerText = `💥 Flew Away! Caiu aos ${mult.toFixed(2)}x. Perdeu.`;
-            }
+            // Guardar no histórico dos 3 potinhos o resultado exato em que o avião caiu
+            let modoTexto = (multQueda >= limiteAdminMaximo - 0.01) ? "Limite Admin" : "Aleatório";
+            let novoRegisto = {
+                id: "Jogo #" + (historicoVoos.length + 1),
+                mult: multQueda.toFixed(2) + "x",
+                tipo: modoTexto
+            };
+            historicoVoos.unshift(novoRegisto); 
+            if (historicoVoos.length > 10) historicoVoos.pop(); 
+            atualizarInterfaceGeral();
+
+            multDisplay.innerText = `💥 Flew Away! Caiu aos ${multQueda.toFixed(2)}x.`;
             atualizarInterfaceGeral();
         }
 
@@ -912,6 +1045,9 @@
             document.getElementById('levantaNumero').value = '';
             document.getElementById('levantaValor').value = '';
         }
+
+        // Inicializar os potinhos ao carregar a página
+        atualizarInterfaceGeral();
     </script>
 
 </body>
